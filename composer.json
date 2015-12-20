@@ -1,5 +1,5 @@
 {
-    "name": "wolfgang-braun/PiRelay",
+    "name": "wolfgang-braun/pirelay",
     "description": "PHP Class to interact with seedstudio's Raspberry Pi Relay Board v1.0",
     "license": "MIT",
     "keywords": ["raspberry", "pi", "relay", "seedstudio"],
