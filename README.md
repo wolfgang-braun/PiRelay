@@ -1,4 +1,4 @@
-Ratchet
+PiRelay
 =======
 
 [![Build Status](https://img.shields.io/travis/wolfgang-braun/pirelay/master.svg)](https://travis-ci.org/wolfgang-braun/pirelay)
