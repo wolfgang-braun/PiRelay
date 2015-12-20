@@ -7,7 +7,6 @@ namespace WolfgangBraun\PiRelay;
  *
  * @link http://www.seeedstudio.com/wiki/Raspberry_Pi_Relay_Board_v1.0
  * @author Wolfgang Braun
- * @version 1.0
  */
     class PiRelay {
 
