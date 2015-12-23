@@ -8,8 +8,8 @@ namespace WolfgangBraun\PiRelay;
  * @link http://www.seeedstudio.com/wiki/Raspberry_Pi_Relay_Board_v1.0
  * @author Wolfgang Braun
  */
-    class PiRelay {
-
+    class PiRelay
+    {
         /**
          * First channel constant
          *
@@ -60,13 +60,6 @@ namespace WolfgangBraun\PiRelay;
         const STATE_OFF = 'off';
 
         /**
-         * Default value - all off
-         *
-         * @var hexadecimal
-         */
-        const DEFAULT_VALUE = 0xff; 
-
-        /**
          * I2C Address
          *
          * @var hexadecimal
@@ -94,7 +87,8 @@ namespace WolfgangBraun\PiRelay;
          * @param hexadecimal $deviceRegister Device register to write on
          * @param int $block 0 = /dev/i2c-0 (port I2C0), 1 = /dev/i2c-1 (port I2C1)
          */
-        function __construct($i2cAddress = null, $deviceRegister = null, $block = null) {
+        public function __construct($i2cAddress = null, $deviceRegister = null, $block = null)
+        {
             if (!empty($i2cAddress)) {
                 $this->i2cAddress = $i2cAddress;
             }
@@ -137,15 +131,15 @@ namespace WolfgangBraun\PiRelay;
             $this->__validateChannel($channel);
 
             $currentValue = $this->_i2cget();
-            $decimalRepresentation = hexdec($currentValue);
-            $binaryRepresentation = decbin($currentValue);
+            $decimalRepresentation = is_int($currentValue) ? $currentValue : hexdec($currentValue);
+            $binaryRepresentation = decbin($decimalRepresentation);
             $relevantBits = substr($binaryRepresentation, -4);
             $ordered = strrev($relevantBits);
             $exploded = str_split($ordered);
-            $states = array_map(function($off) {
+            $states = array_map(function ($off) {
                 return $off ? self::STATE_OFF : self::STATE_ON;
             }, $exploded);
-            if ($channel !== null && isset($states[$channel])) {
+            if (isset($states[$channel])) {
                 return $states[$channel];
             }
             return $states;
@@ -177,7 +171,7 @@ namespace WolfgangBraun\PiRelay;
             $this->__validateState($state);
 
             $currentValue = hexdec($this->_i2cget());
-            
+
             switch ($state) {
                 case self::STATE_ON:
                     if ($channel == self::CHANNEL_ALL) {
@@ -231,7 +225,7 @@ namespace WolfgangBraun\PiRelay;
                 self::CHANNEL_4,
                 self::CHANNEL_ALL
             ];
-            if (!in_array($channel, $validChannels, true)) {
+            if (!key_exists($channel, array_flip($validChannels))) {
                 throw new \InvalidArgumentException('Invalid channel provided. Use PiRelay::CHANNEL_1, PiRelay::CHANNEL_2, PiRelay::CHANNEL_3, PiRelay::CHANNEL_4 or PiRelay::CHANNEL_ALL');
             }
         }
@@ -246,7 +240,7 @@ namespace WolfgangBraun\PiRelay;
         private function __validateState($state)
         {
             $validStates = [
-                self::STATE_ON, 
+                self::STATE_ON,
                 self::STATE_OFF
             ];
             if (!in_array($state, $validStates)) {

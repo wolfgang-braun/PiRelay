@@ -5,8 +5,8 @@ use WolfgangBraun\PiRelay\PiRelay;
 use phpmock\phpunit\PHPMock;
 use PHPUnit_Framework_TestCase;
 
-class PiRelayTest extends PHPUnit_Framework_TestCase {
-
+class PiRelayTest extends PHPUnit_Framework_TestCase
+{
     use PHPMock;
 
     public $valueMap = [
@@ -46,6 +46,7 @@ class PiRelayTest extends PHPUnit_Framework_TestCase {
 
     public function testConstructor()
     {
+        
         // Default values
         $i2cAddress = 0x20;
         $deviceRegister = 0x06;
@@ -71,6 +72,7 @@ class PiRelayTest extends PHPUnit_Framework_TestCase {
     {
         $this->_mockShellExec();
         $PiRelay = new PiRelay();
+
         foreach ($this->valueMap as $config => $value) {
             $this->currentValue = $value;
             $channels = str_split($config);
@@ -79,7 +81,7 @@ class PiRelayTest extends PHPUnit_Framework_TestCase {
                 $state = $PiRelay->getState($channel);
                 if ($expectedState == '1') {
                     $PiRelay->setState($channel, PiRelay::STATE_ON);
-
+                    
                     $this->assertEquals(PiRelay::STATE_ON, $state);
                     $this->assertEquals(PiRelay::STATE_ON, $stateArray[$channel]);
                 } else {
@@ -100,18 +102,21 @@ class PiRelayTest extends PHPUnit_Framework_TestCase {
         try {
             $PiRelay->setState(PiRelay::CHANNEL_ALL, 'invalid_state');
             $this->assertTrue(false, "State validation failed");
-        } catch (\InvalidArgumentException $e) {}
+        } catch (\InvalidArgumentException $e) {
+        }
 
         try {
             $PiRelay->setState('invalid_channel', PiRelay::STATE_ON);
             $this->assertTrue(false, "Channel validation failed");
-        } catch (\InvalidArgumentException $e) {}
+        } catch (\InvalidArgumentException $e) {
+        }
 
         try {
             $this->currentValue = 'Oxinvalid';
             $PiRelay->getState();
             $this->currentValue = 0xff;
             $this->assertTrue(false, "Hex value validation failed");
-        } catch (\BadFunctionCallException $e) {}
+        } catch (\BadFunctionCallException $e) {
+        }
     }
 }
