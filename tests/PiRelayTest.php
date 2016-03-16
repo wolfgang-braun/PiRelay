@@ -30,6 +30,8 @@ class PiRelayTest extends PHPUnit_Framework_TestCase
 
     public $currentValue = 0xff;
 
+    public $lastShellExecCommand = null;
+
     public $mockShell = null;
 
     protected function _mockShellExec()
@@ -39,6 +41,7 @@ class PiRelayTest extends PHPUnit_Framework_TestCase
         }
         $this->mockShell->expects($this->any())->willReturnCallback(
             function ($command) {
+                $this->lastShellExecCommand = $command;
                 return $this->currentValue;
             }
         );
@@ -118,5 +121,35 @@ class PiRelayTest extends PHPUnit_Framework_TestCase
             $this->assertTrue(false, "Hex value validation failed");
         } catch (\BadFunctionCallException $e) {
         }
+    }
+
+    public function testSSH()
+    {
+        $PiRelay = new PiRelay();
+        $defaultSSHConfig = [
+          'host' => null,
+          'user' => null,
+          'keyPath' => null,
+          'active' => false
+        ];
+
+        $initialSSHConfig = $PiRelay->getSSHConfig();
+        $this->assertEquals($initialSSHConfig, $defaultSSHConfig);
+
+        $expectedSSHConfig = [
+          'host' => 'raspberry.local',
+          'user' => 'pi',
+          'keyPath' => '/ssh/key/path',
+          'active' => true
+        ];
+
+        $modifiedSSHConfig = $PiRelay->setSSHConfig($expectedSSHConfig['host'], $expectedSSHConfig['user'], $expectedSSHConfig['keyPath']);
+        $this->assertEquals( $modifiedSSHConfig, $expectedSSHConfig);
+
+        $this->_mockShellExec();
+        $PiRelay->getState();
+        $expectedCommand = "ssh pi@raspberry.local -i /ssh/key/path '/usr/sbin/i2cget -y 1 32 6 2>&1'";
+        $this->assertEquals($this->lastShellExecCommand, $expectedCommand);
+
     }
 }
