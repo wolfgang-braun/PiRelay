@@ -148,7 +148,7 @@ class PiRelayTest extends PHPUnit_Framework_TestCase
 
         $this->_mockShellExec();
         $PiRelay->getState();
-        $expectedCommand = "ssh pi@raspberry.local -i /ssh/key/path '/usr/sbin/i2cget -y 1 32 6 2>&1'";
+        $expectedCommand = "/usr/bin/ssh pi@raspberry.local -i /ssh/key/path -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=quiet '/usr/sbin/i2cget -y 1 32 6 2>&1'";
         $this->assertEquals($this->lastShellExecCommand, $expectedCommand);
 
     }

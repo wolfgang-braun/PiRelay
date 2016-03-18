@@ -101,13 +101,13 @@ class PiRelay
      */
     public function __construct($i2cAddress = null, $deviceRegister = null, $block = null)
     {
-        if (!empty($i2cAddress)) {
+        if (!is_null($i2cAddress)) {
             $this->i2cAddress = $i2cAddress;
         }
-        if (!empty($deviceRegister)) {
+        if (!is_null($deviceRegister)) {
             $this->deviceRegister = $deviceRegister;
         }
-        if (!empty($block)) {
+        if (!is_null($block)) {
             $this->block = $block;
         }
     }
@@ -150,11 +150,11 @@ class PiRelay
     protected function _shellExec($command)
     {
       if ($this->_ssh['active']) {
-        $sshPrefix = 'ssh ';
+        $sshPrefix = '/usr/bin/ssh ';
         $sshPrefix .= $this->_ssh['user'] . '@';
         $sshPrefix .= $this->_ssh['host'] . ' ';
         if (!empty($this->_ssh['keyPath'])) {
-          $sshPrefix .= '-i ' . $this->_ssh['keyPath'] . ' ';
+          $sshPrefix .= '-i ' . $this->_ssh['keyPath'] . ' -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=quiet ';
         }
         $command = $sshPrefix . "'" . $command . "'";
       }
