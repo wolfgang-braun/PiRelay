@@ -49,7 +49,7 @@ class PiRelayTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        
+
         // Default values
         $i2cAddress = 0x20;
         $deviceRegister = 0x06;
@@ -84,7 +84,7 @@ class PiRelayTest extends PHPUnit_Framework_TestCase
                 $state = $PiRelay->getState($channel);
                 if ($expectedState == '1') {
                     $PiRelay->setState($channel, PiRelay::STATE_ON);
-                    
+
                     $this->assertEquals(PiRelay::STATE_ON, $state);
                     $this->assertEquals(PiRelay::STATE_ON, $stateArray[$channel]);
                 } else {
@@ -150,6 +150,5 @@ class PiRelayTest extends PHPUnit_Framework_TestCase
         $PiRelay->getState();
         $expectedCommand = "/usr/bin/ssh pi@raspberry.local -i /ssh/key/path -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=quiet '/usr/sbin/i2cget -y 1 32 6 2>&1'";
         $this->assertEquals($this->lastShellExecCommand, $expectedCommand);
-
     }
 }

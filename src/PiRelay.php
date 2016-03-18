@@ -235,7 +235,7 @@ class PiRelay
 
         switch ($state) {
             case self::STATE_ON:
-                if ($channel == self::CHANNEL_ALL) {
+                if ($channel === self::CHANNEL_ALL) {
                     $currentValue &= ~(0xf<<0);
                 } else {
                     $currentValue &= ~(0x1<<$channel);
@@ -243,7 +243,7 @@ class PiRelay
                 break;
 
             case self::STATE_OFF:
-                if ($channel == self::CHANNEL_ALL) {
+                if ($channel === self::CHANNEL_ALL) {
                     $currentValue |= (0xf<<0);
                 } else {
                     $currentValue |= (0x1<<$channel);
