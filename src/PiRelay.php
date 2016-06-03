@@ -89,7 +89,8 @@ class PiRelay
       'host' => null,
       'user' => null,
       'keyPath' => null,
-      'active' => false
+      'active' => false,
+      'port' => 22
     ];
 
     /**
@@ -119,14 +120,16 @@ class PiRelay
      * @param string $user SSH user of RPI
      * @param string $keyPath Path to the private ssh key
      * @param bool $active Whether to use ssh or not
+     * @param int $port SSH port to be used
      * @return void
      */
-    public function setSSHConfig($host, $user, $keyPath = null, $active = true)
+    public function setSSHConfig($host, $user, $keyPath = null, $active = true, $port = 22)
     {
       $this->_ssh['host'] = $host;
       $this->_ssh['user'] = $user;
       $this->_ssh['keyPath'] = $keyPath;
       $this->_ssh['active'] = $active;
+      $this->_ssh['port'] = $port;
       return $this->_ssh;
     }
 
@@ -156,6 +159,7 @@ class PiRelay
         if (!empty($this->_ssh['keyPath'])) {
           $sshPrefix .= '-i ' . $this->_ssh['keyPath'] . ' -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=quiet ';
         }
+        $sshPrefix .= '-p ' . $this->_ssh['port'] . ' ';
         $command = $sshPrefix . "'" . $command . "'";
       }
       return shell_exec($command);
@@ -319,8 +323,11 @@ class PiRelay
     private function __validateValue($value)
     {
         $validValues = [0xff, 0xfe, 0xfd, 0xfb, 0xf7, 0xfc, 0xf9, 0xf3, 0xfa, 0xf5, 0xf6, 0xf8, 0xf1, 0xf2, 0xf4, 0xf0];
-        if (!in_array($value, $validValues)) {
-            throw new \BadFunctionCallException('Invalid HEX value: ' . $value);
+        foreach ($validValues as $validValue) {
+            if ($validValue == $value) {
+                return;
+            }
         }
+        throw new \BadFunctionCallException('Invalid HEX value: ' . $value);
     }
 }
