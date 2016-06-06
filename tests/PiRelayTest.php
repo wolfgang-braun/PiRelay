@@ -10,22 +10,22 @@ class PiRelayTest extends PHPUnit_Framework_TestCase
     use PHPMock;
 
     public $valueMap = [
-        '0000' => 0xff,
-        '1000' => 0xfe,
-        '0100' => 0xfd,
-        '0010' => 0xfb,
-        '0001' => 0xf7,
-        '1100' => 0xfc,
-        '0110' => 0xf9,
-        '0011' => 0xf3,
-        '1010' => 0xfa,
-        '0101' => 0xf5,
-        '1001' => 0xf6,
-        '1110' => 0xf8,
-        '0111' => 0xf1,
-        '1011' => 0xf2,
-        '1101' => 0xf4,
-        '1111' => 0xf0
+        '0000' => '0xff',
+        '1000' => '0xfe',
+        '0100' => '0xfd',
+        '0010' => '0xfb',
+        '0001' => '0xf7',
+        '1100' => '0xfc',
+        '0110' => '0xf9',
+        '0011' => '0xf3',
+        '1010' => '0xfa',
+        '0101' => '0xf5',
+        '1001' => '0xf6',
+        '1110' => '0xf8',
+        '0111' => '0xf1',
+        '1011' => '0xf2',
+        '1101' => '0xf4',
+        '1111' => '0xf0'
     ];
 
     public $currentValue = 0xff;
@@ -130,7 +130,8 @@ class PiRelayTest extends PHPUnit_Framework_TestCase
           'host' => null,
           'user' => null,
           'keyPath' => null,
-          'active' => false
+          'active' => false,
+          'port' => 22
         ];
 
         $initialSSHConfig = $PiRelay->getSSHConfig();
@@ -140,15 +141,17 @@ class PiRelayTest extends PHPUnit_Framework_TestCase
           'host' => 'raspberry.local',
           'user' => 'pi',
           'keyPath' => '/ssh/key/path',
-          'active' => true
+          'active' => true,
+          'port' => 2000
         ];
 
-        $modifiedSSHConfig = $PiRelay->setSSHConfig($expectedSSHConfig['host'], $expectedSSHConfig['user'], $expectedSSHConfig['keyPath']);
+        $modifiedSSHConfig = $PiRelay->setSSHConfig($expectedSSHConfig['host'], $expectedSSHConfig['user'], $expectedSSHConfig['keyPath'], $expectedSSHConfig['active'], $expectedSSHConfig['port']);
         $this->assertEquals( $modifiedSSHConfig, $expectedSSHConfig);
 
+        $this->currentValue = '0xff';
         $this->_mockShellExec();
         $PiRelay->getState();
-        $expectedCommand = "/usr/bin/ssh pi@raspberry.local -i /ssh/key/path -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=quiet '/usr/sbin/i2cget -y 1 32 6 2>&1'";
+        $expectedCommand = "/usr/bin/ssh pi@raspberry.local -i /ssh/key/path -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=quiet -p 2000 '/usr/sbin/i2cget -y 1 32 6 2>&1'";
         $this->assertEquals($this->lastShellExecCommand, $expectedCommand);
     }
 }

@@ -178,7 +178,7 @@ class PiRelay
         $command .= $this->deviceRegister . ' ';
         $command .= '2>&1';
         $value = $this->_shellExec($command);
-        $this->__validateValue($value);
+        $this->__validateValue(trim($value));
         return $value;
     }
 
@@ -324,10 +324,10 @@ class PiRelay
     {
         $validValues = ['0xff', '0xfe', '0xfd', '0xfb', '0xf7', '0xfc', '0xf9', '0xf3', '0xfa', '0xf5', '0xf6', '0xf8', '0xf1', '0xf2', '0xf4', '0xf0'];
         foreach ($validValues as $validValue) {
-            if (hexdec($validValue) == hexdec($value)) {
+            if ($validValue === $value) {
                 return;
             }
         }
-        throw new \BadFunctionCallException('Invalid HEX value: ' . $value);
+        throw new \BadFunctionCallException('Invalid value: ' . $value);
     }
 }
